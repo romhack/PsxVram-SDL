@@ -35,5 +35,5 @@ To do
 ============
 - Add VRAM reread function
 - Mouse move should show coords
-_____________________
+============
 Griever.Magicteam.net
