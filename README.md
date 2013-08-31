@@ -14,15 +14,15 @@ PsxVram-SDL [DumpFileName]
 Hotkeys
 -----------
 
-w, s, a, d: move window
-shift: move for 1 pixel
-1: 4 BPP mode 
-2: 8 BPP mode
-9: 15 BPP mode
-0: 24 BPP (MDEC) mode
-~: Reverse colors - works for 4 and 8 BPP modes in grayscale
-shift + (1 or 2): CLUT mode
-up, down, left, right: CLUT starting coordinates only for CLUT modes
+- w, s, a, d: move window
+- shift: move for 1 pixel
+- 1: 4 BPP mode 
+- 2: 8 BPP mode
+- 9: 15 BPP mode
+- 0: 24 BPP (MDEC) mode
+- ~: Reverse colors - works for 4 and 8 BPP modes in grayscale
+- shift + (1 or 2): CLUT mode
+- up, down, left, right: CLUT starting coordinates only for CLUT modes
 
 
 
