@@ -23,6 +23,7 @@ Hotkeys
 - ~: Reverse colors - works for 4 and 8 BPP modes in grayscale
 - shift + (1 or 2): CLUT mode
 - up, down, left, right: CLUT starting coordinates only for CLUT modes
+- enter reloads source dump
 
 
 
@@ -33,9 +34,7 @@ Code was totally rewritten from Windows API to crossplatform SDL.
 
 To do
 ============
-- Add VRAM reread function
-- Mouse move should show coords
-
+- Probably, mouse move should show coords
 
 ============
 Griever.Magicteam.net

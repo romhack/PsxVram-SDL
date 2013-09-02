@@ -65,10 +65,10 @@ void drawRect(SDL_Surface * surBlank, SDL_Surface * sur, SDL_Rect * rect, line *
 	int i, x, y, w, h, l, xl, yl;
 	SDL_Rect rectBig;
 
-	w = rect->w = clamp(rect->w, rectSpeed * 8, RECT_W_MAX + 1);
-	h = rect->h = clamp(rect->h, rectSpeed * 8, RECT_H_MAX + 1);
-	w--;
-	h--;			//we're drawing an in-bound rect
+	rect->w = clamp(rect->w, rectSpeed * 8, RECT_W_MAX + 1);
+	rect->h = clamp(rect->h, rectSpeed * 8, RECT_H_MAX + 1);
+	w = rect->w - 1;
+	h = rect->h - 1;	//we're drawing an in-bound rect
 	x = rect->x = clamp(rect->x, 0, VRAM_WIDTH - w);
 	y = rect->y = clamp(rect->y, 0, VRAM_HEIGHT - h);
 
@@ -300,7 +300,7 @@ int main(int argc, char *argv[])
 	SDL_Event event;
 	int running = 1, offset = 0;
 	int x, y;
-	char fileName[MAX_STR_LEN];
+	char fileName[MAX_STR_LEN], hdrStr[5];
 	FILE *fIn;
 	SDL_Rect rect = { RECT_X_INIT, RECT_Y_INIT, RECT_W_INIT, RECT_H_INIT };
 	line clutLine = { {RECT_X_INIT, RECT_Y_INIT}, 0 };
@@ -308,53 +308,29 @@ int main(int argc, char *argv[])
 	u16 *pInBuffer;
 	u32 *pInBufferIterator;
 
+	reversedFlag = 0;
+	clutFlag = 0;
+	mode = SDL_PIXELFORMAT_ABGR1555;
+
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		printf("Unable to initialize SDL: %s\n", SDL_GetError());
+		//printf("Unable to initialize SDL: %s\n", SDL_GetError());
 		return 1;
 	}
 
 	window = SDL_CreateWindow("VRAM overview", SDL_WINDOWPOS_UNDEFINED, 32, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN);
+	winSur = SDL_GetWindowSurface(window);
+
 	if (getFileName(fileName, window, argc, argv) == 0) {
 		SDL_DestroyWindow(window);
 		return -1;
 	}
-
-	pInBuffer = (u16 *) malloc(VRAM_WIDTH * VRAM_HEIGHT * sizeof(u16));
-	fIn = fopen(fileName, "rb");
-	fread(fileName, sizeof(char), 5, fIn);
-	offset = (strncmp(fileName, "ePSXe", 5) == 0) ? EPSXE_VRAM_START : 0;
-	fseek(fIn, offset, SEEK_SET);
-	fread(pInBuffer, sizeof(u16), VRAM_WIDTH * VRAM_HEIGHT, fIn);
-	fclose(fIn);
-
-	//PSX reads 24 bpp info at the same pitch as 15 bpp, so last 2 bytes of each scanline cannot be rendered in 24 bpp mode.
-	//We'll prepare buffer for 24bpp mode once:
-	pInBuffer24 = malloc(VRAM_WIDTH_24BPP * VRAM_HEIGHT * sizeof(u32));
-	pInBufferIterator = pInBuffer24;
-	offset = 0;
-	for (y = 0; y < VRAM_HEIGHT; y++) {
-		for (x = 0; x < VRAM_WIDTH_24BPP; x++) {
-
-			*(pInBufferIterator++) = (*(u32 *) ((u8 *) pInBuffer + offset));
-			offset += 3;
-		}
-		offset = y * VRAM_WIDTH * sizeof(u16);
-	}
-
-	//overview window
-	mode = SDL_PIXELFORMAT_ABGR1555;
-	sur15 = SDL_CreateRGBSurfaceFrom((u8 *) pInBuffer, VRAM_WIDTH, VRAM_HEIGHT, 16, VRAM_WIDTH * sizeof(u16), 0x1F, 0x3E0, 0x7c00, 0x0);
-	winSur = SDL_GetWindowSurface(window);
-	SDL_BlitSurface(sur15, 0, winSur, 0);
-	drawRect(sur15, winSur, &rect, &clutLine);
-
 	//mode view window:     
 	SDL_GetWindowPosition(window, &x, &y);
 	window2 = SDL_CreateWindow("Mode viewer", SDL_WINDOWPOS_UNDEFINED, y + VRAM_HEIGHT, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN);
 	winSur2 = SDL_GetWindowSurface(window2);
-	SDL_BlitSurface(sur15, 0, winSur2, 0);
 
-	//surfaces:
+	pInBuffer = (u16 *) malloc(VRAM_WIDTH * VRAM_HEIGHT * sizeof(u16));
+	pInBuffer24 = malloc(VRAM_WIDTH_24BPP * VRAM_HEIGHT * sizeof(u32));
 	sur8 = SDL_CreateRGBSurface(0, rect.w * 2, rect.h, 8, 0, 0, 0, 0);
 	/*
 	 *SDL cannot blit 4bpp on truecolor surface
@@ -362,14 +338,64 @@ int main(int argc, char *argv[])
 	 *drawInbound and then should be treated as an 8bit surface
 	 */
 	sur4 = SDL_CreateRGBSurface(0, rect.w * 4, rect.h, 8, 0, 0, 0, 0);
+
+readFile:
+	if ((fIn = fopen(fileName, "rb")) == NULL) {
+		SDL_Quit();
+		free(pInBuffer);
+		free(pInBuffer24);
+		SDL_DestroyWindow(window);
+		SDL_DestroyWindow(window2);
+		SDL_FreeSurface(sur4);
+		SDL_FreeSurface(sur8);
+		return 1;
+	}
+	fread(hdrStr, sizeof(char), 5, fIn);
+	offset = (strncmp(hdrStr, "ePSXe", 5) == 0) ? EPSXE_VRAM_START : 0;
+	fseek(fIn, offset, SEEK_SET);
+	fread(pInBuffer, sizeof(u16), VRAM_WIDTH * VRAM_HEIGHT, fIn);
+	fclose(fIn);
+	//overview window       
+	sur15 = SDL_CreateRGBSurfaceFrom((u8 *) pInBuffer, VRAM_WIDTH, VRAM_HEIGHT, 16, VRAM_WIDTH * sizeof(u16), 0x1F, 0x3E0, 0x7c00, 0x0);
+	SDL_BlitSurface(sur15, 0, winSur, 0);
+	drawRect(sur15, winSur, &rect, &clutLine);
+	//SDL_UpdateWindowSurface(window);
+
+	//PSX reads 24 bpp info at the same pitch as 15 bpp, so last 2 bytes of each scanline cannot be rendered in 24 bpp mode.
+	//We'll prepare buffer for 24bpp mode once:
+
+	pInBufferIterator = pInBuffer24;
+	for (y = 0, offset = 0; y < VRAM_HEIGHT; y++) {
+		for (x = 0; x < VRAM_WIDTH_24BPP; x++) {
+
+			*(pInBufferIterator++) = (*(u32 *) ((u8 *) pInBuffer + offset));
+			offset += 3;
+		}
+		offset = y * VRAM_WIDTH * sizeof(u16);
+	}
 	sur24 = SDL_CreateRGBSurfaceFrom((u8 *) pInBuffer24, VRAM_WIDTH_24BPP, VRAM_HEIGHT, 32, VRAM_WIDTH_24BPP * 4, 0xFF, 0xFF00, 0xFF0000, 0x0);
 
-	reversedFlag = 0;
-	clutFlag = 0;
+	switch (mode) {
+	case SDL_PIXELFORMAT_INDEX4MSB:
+		updatePal(sur15, &clutLine, sur4);
+		drawInbound(sur4, window2, winSur2, pInBuffer, &rect);
+		break;
+	case SDL_PIXELFORMAT_INDEX8:
+		updatePal(sur15, &clutLine, sur8);
+		drawInbound(sur8, window2, winSur2, pInBuffer, &rect);
+		break;
+	case SDL_PIXELFORMAT_ABGR1555:
+		SDL_BlitSurface(sur15, 0, winSur2, 0);
+		break;
+	case SDL_PIXELFORMAT_BGR888:
+		SDL_BlitSurface(sur24, 0, winSur2, 0);
+		break;
+	}
 
-	printf(SDL_GetError());
 	//Keep looping until the user closes the SDL window
 	while (running) {
+		SDL_UpdateWindowSurface(window);
+		SDL_UpdateWindowSurface(window2);
 		SDL_WaitEvent(&event);
 
 		switch (event.type) {
@@ -381,6 +407,7 @@ int main(int argc, char *argv[])
 			 *wsad moves rect upDownLeftRight moves clutLine
 			 *ctrl switches rect slow move mode. Just do not step 1px at width/height change
 			 *shift changes width/height of rect
+			 *enter reloads source dump
 			 */
 			if ((event.key.keysym.mod & KMOD_CTRL) != 0 && ((event.key.keysym.mod & KMOD_SHIFT) == 0)) {
 				rectSpeed = 1;
@@ -516,9 +543,15 @@ int main(int argc, char *argv[])
 					drawRect(sur15, winSur, &rect, &clutLine);
 					drawInbound(sur4, window2, winSur2, pInBuffer, &rect);
 					break;
+				case SDLK_RETURN:
+					SDL_FreeSurface(sur15);
+					SDL_FreeSurface(sur24);	//these are created from reread buffers
+					goto readFile;	//sorry, but that's the most straightforward way
+					break;
 				}
 				updateTitle(window, window2, &rect, &clutLine);
 				break;
+
 			}
 
 		case SDL_WINDOWEVENT:
@@ -527,10 +560,6 @@ int main(int argc, char *argv[])
 			}
 			break;
 		}
-
-		SDL_UpdateWindowSurface(window);
-		SDL_UpdateWindowSurface(window2);
-
 	}
 	SDL_Quit();
 	free(pInBuffer);

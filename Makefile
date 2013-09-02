@@ -10,17 +10,20 @@ OBJS    := $(PROJ).o
 CC      := gcc
 LD      := gcc
 
+CFLAGS :=-Wall
+
+ifeq ($(OS),Windows_NT)
+	CFLAGS +=-mwindows
+	SDLFLAGS +=-lmingw32
+endif 
+
+SDLFLAGS +=-lSDL2main -lSDL2
 
 ifeq ($(MODE),DEBUG)
-	CFLAGS	:= -ggdb -O0 -Wall	
+	CFLAGS	+=-O0 -ggdb 	
 else	
-	CFLAGS  := -O3 -s -Wall -mwindows
+	CFLAGS  +=-O3 -s 
 endif
-
-SDLFLAGS := -lmingw32 -lSDL2main -lSDL2
-#LINKERFLAGS := -Wl,-Map,foo.map 
-
-
 
 .PHONY : debug build clean run 
 
@@ -34,7 +37,7 @@ build: $(TARGET).exe
 
 $(TARGET).exe: $(TARGET).c
 	$(CC)  $(CFLAGS) $(SDLFLAGS) -c $(TARGET).c 
-	$(CC) -o $(TARGET).exe $(OBJS) $(CFLAGS) $(SDLFLAGS) $(LINKERFLAGS)
+	$(CC) -o $(TARGET).exe $(OBJS) $(CFLAGS) $(SDLFLAGS)
 	
 
 
