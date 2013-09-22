@@ -2,6 +2,10 @@ PsxVram-SDL
 ============
 Viewer for displaying vram in uncompressed ePSXe savestates or from straight video ram dumps.
 
+Features:
+-----------
+- Code was totally rewritten from Windows API to crossplatform SDL
+- CLUT possible positions are lessened
 
 
 Usage:
@@ -24,17 +28,14 @@ Hotkeys
 - shift + (1 or 2): CLUT mode
 - up, down, left, right: CLUT starting coordinates only for CLUT modes
 - enter reloads source dump
+- ctrl + mouse movement over mode viewer window shows offset in VRAM
 
 
 
 For license information please see LICENSE.md
-
 Original idea by Agemo http://www.romhacking.net/community/737/
-Code was totally rewritten from Windows API to crossplatform SDL.
 
-To do
-============
-- Probably, mouse move should show coords
+
 
 ============
 Griever.Magicteam.net

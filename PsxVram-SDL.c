@@ -46,7 +46,7 @@ typedef struct {
 int mode;			//current display mode
 int reversedFlag;		//flag of reversed colors
 int clutFlag;			//flag of clut select at indexed modes
-int rectSpeed;
+int rectSpeed, clutSpeed;
 
 inline int clamp(int x, int min, int max)	//for rect on-screen move
 {
@@ -84,13 +84,14 @@ void drawRect(SDL_Surface * surBlank, SDL_Surface * sur, SDL_Rect * rect, line *
 	SDL_BlitSurface(surBlank, &rectBig, sur, &rectBig);
 
 	//clutLine
+	clutSpeed = (mode == SDL_PIXELFORMAT_INDEX8) ? CLUT_SIZE_8BPP : CLUT_SIZE_4BPP;
 	l = clutLine->length;
-	xl = clutLine->startCoord.x = clamp(clutLine->startCoord.x, 0, VRAM_WIDTH - l + 1);
+	xl = clutLine->startCoord.x = clamp((clutLine->startCoord.x & ~(clutSpeed - 1)), 0, VRAM_WIDTH - l + 1);
 	yl = clutLine->startCoord.y = clamp(clutLine->startCoord.y, 0, VRAM_HEIGHT);
 	//clear clutLine
-	rectBig.x = xl - rectSpeed;
+	rectBig.x = xl - clutSpeed;
 	rectBig.y = yl - rectSpeed;
-	rectBig.w = CLUT_SIZE_8BPP + rectSpeed * 2 + 1;	//to overwrite 8bpp long clutLine
+	rectBig.w = CLUT_SIZE_8BPP + clutSpeed * 2 + 1;	//to overwrite 8bpp long clutLine
 	rectBig.h = rectSpeed * 2 + 1;
 	SDL_BlitSurface(surBlank, &rectBig, sur, &rectBig);
 
@@ -293,6 +294,27 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 	return running;
 }
 
+void showMouseCoords(int x, int y, SDL_Rect * rect, SDL_Window * win)
+{
+	char strBuf[MAX_STR_LEN] = "";
+
+	switch (mode) {		//calculate global mouse coords based on relative coords and rect position
+	case SDL_PIXELFORMAT_INDEX4MSB:
+		x = rect->x + (x / (sizeof(u16) * 2));	//half a byte per pixel
+		y += rect->y;
+		break;
+	case SDL_PIXELFORMAT_INDEX8:
+		x = rect->x + (x / sizeof(u16));
+		y += rect->y;
+		break;
+	case SDL_PIXELFORMAT_BGR888:
+		x = (x * 3) / sizeof(u16);	//3 bytes per pixel
+		break;
+	}
+	sprintf(strBuf, "X:%03d, Y:%03d, Offset:0x%05X", x, y, (x + y * VRAM_WIDTH) * sizeof(u16));
+	SDL_SetWindowTitle(win, strBuf);
+}
+
 int main(int argc, char *argv[])
 {
 	SDL_Surface *sur15, *sur24, *sur8, *sur4, *winSur, *winSur2;
@@ -310,6 +332,7 @@ int main(int argc, char *argv[])
 
 	reversedFlag = 0;
 	clutFlag = 0;
+	clutSpeed = 0x10;
 	mode = SDL_PIXELFORMAT_ABGR1555;
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -468,10 +491,11 @@ readFile:
 				clutLine.startCoord.y += rectSpeed;
 				break;
 			case SDLK_LEFT:
-				clutLine.startCoord.x -= rectSpeed;
+				clutLine.startCoord.x -= clutSpeed;
+				//align position GPU can address only full clut coords, which lessens possible clut positions
 				break;
 			case SDLK_RIGHT:
-				clutLine.startCoord.x += rectSpeed;
+				clutLine.startCoord.x += clutSpeed;
 				break;
 			}
 
@@ -559,6 +583,13 @@ readFile:
 				running = 0;
 			}
 			break;
+
+		case SDL_MOUSEMOTION:
+			if ((event.motion.windowID == 2) && (SDL_GetModState() & KMOD_CTRL)) {	//show coords at any mouse movement and ctrl is pressed
+				showMouseCoords(event.motion.x, event.motion.y, &rect, window2);
+			}
+			break;
+
 		}
 	}
 	SDL_Quit();
