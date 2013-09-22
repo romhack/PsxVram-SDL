@@ -19,7 +19,8 @@ Hotkeys
 -----------
 
 - w, s, a, d: move window
-- shift: move for 1 pixel
+- ctrl: move for 1 pixel
+- shift: mode viewer resize
 - 1: 4 BPP mode 
 - 2: 8 BPP mode
 - 9: 15 BPP mode
