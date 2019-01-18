@@ -86,7 +86,8 @@ void drawRect(SDL_Surface * surBlank, SDL_Surface * sur, SDL_Rect * rect, line *
 	//clutLine
 	clutSpeed = (mode == SDL_PIXELFORMAT_INDEX8) ? CLUT_SIZE_8BPP : CLUT_SIZE_4BPP;
 	l = clutLine->length;
-	xl = clutLine->startCoord.x = clamp((clutLine->startCoord.x & ~(clutSpeed - 1)), 0, VRAM_WIDTH - l + 1);
+	//xl = clutLine->startCoord.x = clamp((clutLine->startCoord.x & ~(clutSpeed - 1)), 0, VRAM_WIDTH - l + 1);
+	xl = clutLine->startCoord.x = clamp(clutLine->startCoord.x, 0, VRAM_WIDTH - l + 1);
 	yl = clutLine->startCoord.y = clamp(clutLine->startCoord.y, 0, VRAM_HEIGHT);
 	//clear clutLine
 	rectBig.x = xl - clutSpeed;
@@ -434,8 +435,9 @@ readFile:
 			 */
 			if ((event.key.keysym.mod & KMOD_CTRL) != 0 && ((event.key.keysym.mod & KMOD_SHIFT) == 0)) {
 				rectSpeed = 1;
-			} else
+			} else {
 				rectSpeed = 8;
+			}
 
 			switch (event.key.keysym.sym) {
 			case SDLK_ESCAPE:
@@ -491,11 +493,11 @@ readFile:
 				clutLine.startCoord.y += rectSpeed;
 				break;
 			case SDLK_LEFT:
-				clutLine.startCoord.x -= clutSpeed;
+				clutLine.startCoord.x -= rectSpeed;
 				//align position GPU can address only full clut coords, which lessens possible clut positions
 				break;
 			case SDLK_RIGHT:
-				clutLine.startCoord.x += clutSpeed;
+				clutLine.startCoord.x += rectSpeed;
 				break;
 			}
 
