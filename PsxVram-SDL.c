@@ -341,7 +341,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	window = SDL_CreateWindow("VRAM overview", SDL_WINDOWPOS_UNDEFINED, 32, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("VRAM overview", SDL_WINDOWPOS_UNDEFINED, 32, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 	winSur = SDL_GetWindowSurface(window);
 
 	if (getFileName(fileName, window, argc, argv) == 0) {
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
 	}
 	//mode view window:     
 	SDL_GetWindowPosition(window, &x, &y);
-	window2 = SDL_CreateWindow("Mode viewer", SDL_WINDOWPOS_UNDEFINED, y + VRAM_HEIGHT, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN);
+	window2 = SDL_CreateWindow("Mode viewer", SDL_WINDOWPOS_UNDEFINED, y + VRAM_HEIGHT, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 	winSur2 = SDL_GetWindowSurface(window2);
 
 	pInBuffer = (u16 *) malloc(VRAM_WIDTH * VRAM_HEIGHT * sizeof(u16));
