@@ -9,7 +9,11 @@
 #include <stdlib.h>
 #include "SDL2/SDL.h"
 #include <string.h>
+#if _MSC_VER
+#define F_OK 0
+#else
 #include <unistd.h>
+#endif
 
 #define VRAM_WIDTH 1024
 #define VRAM_HEIGHT 512
