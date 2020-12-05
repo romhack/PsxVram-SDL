@@ -294,6 +294,8 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 				running = 0;
 			}
 		}
+		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+			running = 0;
 		SDL_UpdateWindowSurface(window);
 	}
 	SDL_FreeSurface(winSur);
