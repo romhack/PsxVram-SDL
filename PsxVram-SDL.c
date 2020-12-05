@@ -270,15 +270,16 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 	SDL_Surface *winSur;
 	int running = 1;
 
+	if ((argc == 2) && (access(argv[1], F_OK) != -1)) {
+		strcpy(fileName, argv[1]);
+		return 1;
+	}
+
 	if (access(DEFAULT_FILENAME, F_OK) != -1) {
 		strcpy(fileName, DEFAULT_FILENAME);
 		return 1;
-	} else {
-		if ((argc == 2) && (access(argv[1], F_OK) != -1)) {
-			strcpy(fileName, argv[1]);
-			return 1;
-		}
 	}
+
 	winSur = SDL_GetWindowSurface(window);	//so window's black content will be drawn
 	SDL_SetWindowTitle(window, "Drag and drop input file");
 	while (running) {
