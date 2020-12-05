@@ -6,9 +6,10 @@ Viewer for displaying vram in uncompressed ePSXe savestates or from straight vid
 Features
 --------
 
+- Support of PCSX, ePSXe and NO$PSX save states 
 - Code was totally rewritten from Windows API to crossplatform SDL
 - CLUT possible positions are lessened
-
+  
 Usage
 -----
 
@@ -60,6 +61,11 @@ To get 1:1 scaling back, do the following:
   - set *Scaling performed by:* to *Application*
 - restart the application
 
+Building
+--------
+
+On Windows, you will need vcpkg along SDL2, i.e. `vcpkg install sdl2:x86-windows sdl2:x64-windows`.
+
 Licence
 -------
 
@@ -68,6 +74,8 @@ For license information please see LICENSE.md
 Credits
 -------
 
-Original idea by Agemo http://www.romhacking.net/community/737/
+- Original idea by Agemo http://www.romhacking.net/community/737/
+- Griever.Magicteam.net
+- https://github.com/romhack/
+- https://github.com/aybe/
 
-Griever.Magicteam.net
