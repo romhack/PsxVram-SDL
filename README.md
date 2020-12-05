@@ -5,9 +5,9 @@ Viewer for displaying vram in uncompressed ePSXe savestates or from straight vid
 
 Features
 --------
+
 - Code was totally rewritten from Windows API to crossplatform SDL
 - CLUT possible positions are lessened
-
 
 Usage
 -----
@@ -16,7 +16,17 @@ Usage
 PsxVram-SDL [DumpFileName]
 ```
 
-***DumpFileName*** - This can be either PSX's 1MB Video RAM dump (which can be obtained from PCSX dump function) or unzipped ePSXe savestate. Utility will search for default "vram.bin" in current directory, then check for command line argument and then wait for drag-n-drop input if nothing was found.
+***DumpFileName*** can be one of the following:
+
+- PCSX VRAM dump
+- ePSXe unzipped savestate (7-Zip's context menu can unzip it)
+- NO$PSX uncompressed savestate (configurable in NO$PSX's SAV/SNA File Format option)
+
+Also, the application does the following:
+
+- if a `vram.bin` file is found in current directory, it will be loaded immediately
+- (else) if `DumpFileName` command line argument is set, it will be loaded instead
+- (else) waits for the user to drop a file onto application's main window
 
 Hotkeys
 -------
