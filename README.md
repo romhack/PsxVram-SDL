@@ -1,22 +1,25 @@
 PsxVram-SDL
-============
+===========
+
 Viewer for displaying vram in uncompressed ePSXe savestates or from straight video ram dumps.
 
-Features:
------------
+Features
+--------
 - Code was totally rewritten from Windows API to crossplatform SDL
 - CLUT possible positions are lessened
 
 
-Usage:
------------
+Usage
+-----
+
 ```
 PsxVram-SDL [DumpFileName]
 ```
+
 ***DumpFileName*** - This can be either PSX's 1MB Video RAM dump (which can be obtained from PCSX dump function) or unzipped ePSXe savestate. Utility will search for default "vram.bin" in current directory, then check for command line argument and then wait for drag-n-drop input if nothing was found.
 
 Hotkeys
------------
+-------
 
 - w, s, a, d: move window
 - ctrl: move for 1 pixel
@@ -47,10 +50,14 @@ To get 1:1 scaling back, do the following:
   - set *Scaling performed by:* to *Application*
 - restart the application
 
+Licence
+-------
+
 For license information please see LICENSE.md
+
+Credits
+-------
+
 Original idea by Agemo http://www.romhacking.net/community/737/
 
-
-
-============
 Griever.Magicteam.net
