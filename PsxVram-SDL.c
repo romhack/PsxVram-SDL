@@ -32,6 +32,7 @@
 
 /*uncompressed savestate vram start offset*/
 #define EPSXE_VRAM_START 0x2733DF
+#define NO$PS_VRAM_START 0x289070
 #define DEFAULT_FILENAME "vram.bin"
 
 #define MAX_STR_LEN 0x100
@@ -378,7 +379,10 @@ readFile:
 		return 1;
 	}
 	fread(hdrStr, sizeof(char), 5, fIn);
-	offset = (strncmp(hdrStr, "ePSXe", 5) == 0) ? EPSXE_VRAM_START : 0;
+	if (strncmp(hdrStr, "ePSXe", 5) == 0)
+		offset = EPSXE_VRAM_START;
+	if (strncmp(hdrStr, "NO$PS", 5) == 0)
+		offset = NO$PS_VRAM_START;
 	fseek(fIn, offset, SEEK_SET);
 	fread(pInBuffer, sizeof(u16), VRAM_WIDTH * VRAM_HEIGHT, fIn);
 	fclose(fIn);
