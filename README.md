@@ -45,22 +45,6 @@ Hotkeys
 - enter reloads source dump
 - ctrl + mouse movement over mode viewer window shows offset in VRAM
 
-Issues
-------
-
-### High-DPI on Windows 10
-
-To get 1:1 scaling back, do the following:
-
-- in *Windows Explorer*
-  - right-click the application executable and click *Properties*
-- in *Settings* section
-  - click *Change high DPI settings*
-- in *High DPI scaling override* section
-  - enable *Override high DPI scale behavior*
-  - set *Scaling performed by:* to *Application*
-- restart the application
-
 Building
 --------
 
