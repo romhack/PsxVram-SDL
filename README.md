@@ -1,14 +1,14 @@
 PsxVram-SDL
 ===========
 
-Viewer for displaying vram in uncompressed ePSXe savestates or from straight video ram dumps.
+Viewer for displaying VRAM save states from PCSX, ePSXe and NO$PSX.
 
 Features
 --------
 
+- Cross platform SDL application
 - Support of PCSX, ePSXe and NO$PSX save states 
-- Code was totally rewritten from Windows API to crossplatform SDL
-- CLUT possible positions are lessened
+- Lessened CLUT possible positions for faster navigation
   
 Usage
 -----
@@ -32,18 +32,18 @@ Also, the application does the following:
 Hotkeys
 -------
 
-- w, s, a, d: move window
-- ctrl: move for 1 pixel
-- shift: mode viewer resize
+- W/S/A/D: move window
+- Ctrl: move for 1 pixel
+- Shift: mode viewer resize
 - 1: 4 BPP mode 
 - 2: 8 BPP mode
 - 9: 15 BPP mode
 - 0: 24 BPP (MDEC) mode
-- ~: Reverse colors - works for 4 and 8 BPP modes in grayscale
-- shift + (1 or 2): CLUT mode
-- up, down, left, right: CLUT starting coordinates only for CLUT modes
-- enter reloads source dump
-- ctrl + mouse movement over mode viewer window shows offset in VRAM
+- ~: Reverse colors (for 4 and 8 BPP grayscale modes)
+- Shift + 1 or 2: CLUT mode
+- Up/Down/Left/Right: CLUT starting coordinates (only for CLUT modes)
+- Enter: reloads source dump
+- Ctrl + mouse over mode viewer: show VRAM offset
 
 Building
 --------
