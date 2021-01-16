@@ -1,7 +1,7 @@
 PsxVram-SDL
 ===========
 
-Viewer for displaying VRAM save states from PCSX, ePSXe and NO$PSX.
+Viewer for displaying PSX VRAM dumps and save states from PCSX, ePSXe and NO$PSX.
 
 Features
 --------
@@ -33,8 +33,8 @@ Hotkeys
 -------
 
 - W/S/A/D: move window
-- Ctrl: move for 1 pixel
-- Shift: mode viewer resize
+- Ctrl + direction: move for 1 pixel
+- Shift + direction: mode viewer resize
 - 1: 4 BPP mode 
 - 2: 8 BPP mode
 - 9: 15 BPP mode
@@ -49,6 +49,7 @@ Building
 --------
 
 On Windows, you will need vcpkg along SDL2, i.e. `vcpkg install sdl2:x86-windows sdl2:x64-windows`.
+MSYS build on Windows is also possible, using make file with usual SDL2 installation above MSYS
 
 Licence
 -------
@@ -59,7 +60,6 @@ Credits
 -------
 
 - Original idea by Agemo http://www.romhacking.net/community/737/
-- Griever.Magicteam.net
 - https://github.com/romhack/
 - https://github.com/aybe/
 
