@@ -9,7 +9,11 @@
 #include <stdlib.h>
 #include "SDL2/SDL.h"
 #include <string.h>
+#if _MSC_VER
+#define F_OK 0
+#else
 #include <unistd.h>
+#endif
 
 #define VRAM_WIDTH 1024
 #define VRAM_HEIGHT 512
@@ -28,6 +32,7 @@
 
 /*uncompressed savestate vram start offset*/
 #define EPSXE_VRAM_START 0x2733DF
+#define NO$PS_VRAM_START 0x289070
 #define DEFAULT_FILENAME "vram.bin"
 
 #define MAX_STR_LEN 0x100
@@ -266,15 +271,16 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 	SDL_Surface *winSur;
 	int running = 1;
 
+	if ((argc == 2) && (access(argv[1], F_OK) != -1)) {
+		strcpy(fileName, argv[1]);
+		return 1;
+	}
+
 	if (access(DEFAULT_FILENAME, F_OK) != -1) {
 		strcpy(fileName, DEFAULT_FILENAME);
 		return 1;
-	} else {
-		if ((argc == 2) && (access(argv[1], F_OK) != -1)) {
-			strcpy(fileName, argv[1]);
-			return 1;
-		}
 	}
+
 	winSur = SDL_GetWindowSurface(window);	//so window's black content will be drawn
 	SDL_SetWindowTitle(window, "Drag and drop input file");
 	while (running) {
@@ -289,6 +295,8 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 				running = 0;
 			}
 		}
+		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+			running = 0;
 		SDL_UpdateWindowSurface(window);
 	}
 	SDL_FreeSurface(winSur);
@@ -375,7 +383,10 @@ readFile:
 		return 1;
 	}
 	fread(hdrStr, sizeof(char), 5, fIn);
-	offset = (strncmp(hdrStr, "ePSXe", 5) == 0) ? EPSXE_VRAM_START : 0;
+	if (strncmp(hdrStr, "ePSXe", 5) == 0)
+		offset = EPSXE_VRAM_START;
+	if (strncmp(hdrStr, "NO$PS", 5) == 0)
+		offset = NO$PS_VRAM_START;
 	fseek(fIn, offset, SEEK_SET);
 	fread(pInBuffer, sizeof(u16), VRAM_WIDTH * VRAM_HEIGHT, fIn);
 	fclose(fIn);
