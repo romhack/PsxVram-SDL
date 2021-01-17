@@ -33,8 +33,8 @@ Hotkeys
 -------
 
 - W/S/A/D: move window
-- Ctrl + direction: move for 1 pixel
-- Shift + direction: mode viewer resize
+- Ctrl + (W/S/A/D) direction: move for 1 pixel
+- Shift +(W/S/A/D) direction: mode viewer resize
 - 1: 4 BPP mode 
 - 2: 8 BPP mode
 - 9: 15 BPP mode
