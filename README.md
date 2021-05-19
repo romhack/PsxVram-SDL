@@ -41,7 +41,7 @@ Hotkeys
 - 0: 24 BPP (MDEC) mode
 - ~: Reverse colors (for 4 and 8 BPP grayscale modes)
 - Shift + 1 or 2: CLUT mode
-- Up/Down/Left/Right: CLUT starting coordinates (only for CLUT modes)
+- Up/Down/Left/Right: CLUT starting coordinates (only for CLUT modes). This is affected by Ctrl button press for precise CLUT positioning.
 - Enter: reloads source dump
 - Ctrl + mouse over mode viewer: show VRAM offset
 
@@ -62,4 +62,3 @@ Credits
 - Original idea by Agemo http://www.romhacking.net/community/737/
 - https://github.com/romhack/
 - https://github.com/aybe/
-

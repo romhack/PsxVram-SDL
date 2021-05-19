@@ -320,7 +320,7 @@ void showMouseCoords(int x, int y, SDL_Rect * rect, SDL_Window * win)
 		x = (x * 3) / sizeof(u16);	//3 bytes per pixel
 		break;
 	}
-	sprintf(strBuf, "X:%03d, Y:%03d, Offset:0x%05X", x, y, (x + y * VRAM_WIDTH) * sizeof(u16));
+	sprintf(strBuf, "X:%03d, Y:%03d, Offset:0x%05llX", x, y, (x + y * VRAM_WIDTH) * sizeof(u16));
 	SDL_SetWindowTitle(win, strBuf);
 }
 
