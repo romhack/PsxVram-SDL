@@ -372,6 +372,7 @@ int main(int argc, char *argv[])
 	sur4 = SDL_CreateRGBSurface(0, rect.w * 4, rect.h, 8, 0, 0, 0, 0);
 
 readFile:
+	offset = 0;
 	if ((fIn = fopen(fileName, "rb")) == NULL) {
 		SDL_Quit();
 		free(pInBuffer);
