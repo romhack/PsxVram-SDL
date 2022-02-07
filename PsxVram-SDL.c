@@ -435,7 +435,13 @@ readFile:
 		SDL_WaitEvent(&event);
 
 		switch (event.type) {
-
+		case SDL_DROPFILE:
+			strcpy(fileName, event.drop.file);
+			free(event.drop.file);
+			SDL_SetWindowTitle(window, fileName);
+			SDL_FreeSurface(sur15);
+			SDL_FreeSurface(sur24); //these are created from reread buffers
+			goto readFile; //sorry, but that's the most straightforward way
 		case SDL_KEYDOWN:
 			/*
 			 *esc to exit
