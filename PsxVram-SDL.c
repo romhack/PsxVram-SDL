@@ -17,6 +17,7 @@
 
 #define VRAM_WIDTH 1024
 #define VRAM_HEIGHT 512
+#define VRAM_SIZE_BYTES (1 << 20)
 #define VRAM_WIDTH_24BPP ((VRAM_WIDTH*sizeof(u16))/3)
 #define CYAN_PIXEL 0x0000FFFF
 #define MAGENTA_PIXEL 0x00FF00FF
@@ -383,6 +384,7 @@ readFile:
 		SDL_FreeSurface(sur8);
 		return 1;
 	}
+	memset(pInBuffer, 0x00, VRAM_SIZE_BYTES);
 	fread(hdrStr, sizeof(char), 5, fIn);
 	if (strncmp(hdrStr, "ePSXe", 5) == 0)
 		offset = EPSXE_VRAM_START;
