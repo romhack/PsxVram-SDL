@@ -51,6 +51,20 @@ Building
 On Windows, you will need vcpkg along SDL2, i.e. `vcpkg install sdl2:x86-windows sdl2:x64-windows`.
 MSYS build on Windows is also possible, using make file with usual SDL2 installation above MSYS
 
+### CMake
+
+Currently, the default generator used by Visual Studio (Ninja) ignores the `VS_DPI_AWARE` property, resulting in a non DPI-aware executable. To fix the problem you can specify another generator in` CMakeSettings.json`:
+
+```
+{
+  "configurations": [
+    {
+      "generator": "Visual Studio 17 2022"
+    }
+  ]
+}
+```
+
 Licence
 -------
 
