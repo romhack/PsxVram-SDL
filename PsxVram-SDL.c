@@ -186,16 +186,16 @@ void updateTitle(SDL_Window * win, SDL_Window * win2, SDL_Rect * rect, line * cl
 
 	switch (mode) {		//first mandatory bitmode:
 	case SDL_PIXELFORMAT_INDEX4MSB:
-		strcpy(strBuf2, "4 BPP mode ");
+		strcpy_s(strBuf2, sizeof strBuf2, "4 BPP mode ");
 		break;
 	case SDL_PIXELFORMAT_INDEX8:
-		strcpy(strBuf2, "8 BPP mode ");
+		strcpy_s(strBuf2, sizeof strBuf2, "8 BPP mode ");
 		break;
 	case SDL_PIXELFORMAT_ABGR1555:
-		strcpy(strBuf2, "15 BPP mode ");
+		strcpy_s(strBuf2, sizeof strBuf2, "15 BPP mode ");
 		break;
 	case SDL_PIXELFORMAT_BGR888:
-		strcpy(strBuf2, "24 BPP (MDEC) mode ");
+		strcpy_s(strBuf2, sizeof strBuf2, "24 BPP (MDEC) mode ");
 		break;
 	}
 	//now optional clut mode
@@ -272,12 +272,12 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 	int running = 1;
 
 	if ((argc == 2) && (access(argv[1], F_OK) != -1)) {
-		strcpy(fileName, argv[1]);
+		strcpy_s(fileName, MAX_STR_LEN, argv[1]);
 		return 1;
 	}
 
 	if (access(DEFAULT_FILENAME, F_OK) != -1) {
-		strcpy(fileName, DEFAULT_FILENAME);
+		strcpy_s(fileName, MAX_STR_LEN, DEFAULT_FILENAME);
 		return 1;
 	}
 
@@ -286,7 +286,7 @@ int getFileName(char *fileName, SDL_Window * window, int argc, char *argv[])
 	while (running) {
 		SDL_WaitEvent(&event);
 		if (event.type == SDL_DROPFILE) {
-			strcpy(fileName, event.drop.file);
+			strcpy_s(fileName, MAX_STR_LEN, event.drop.file);
 			free(event.drop.file);
 			SDL_SetWindowTitle(window, fileName);
 			break;
@@ -436,7 +436,7 @@ readFile:
 
 		switch (event.type) {
 		case SDL_DROPFILE:
-			strcpy(fileName, event.drop.file);
+			strcpy_s(fileName, MAX_STR_LEN, event.drop.file);
 			free(event.drop.file);
 			SDL_SetWindowTitle(window, fileName);
 			SDL_FreeSurface(sur15);
