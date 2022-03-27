@@ -44,6 +44,7 @@ Hotkeys
 - Up/Down/Left/Right: CLUT starting coordinates (only for CLUT modes). This is affected by Ctrl button press for precise CLUT positioning.
 - Enter: reloads source dump
 - Ctrl + mouse over mode viewer: show VRAM offset
+- P: save mode viewer contents to BMP file in VRAM dump folder. Bitmap mode and palette are transferred to BMP according to current mode.
 
 Building
 --------

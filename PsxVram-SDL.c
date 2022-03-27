@@ -327,12 +327,12 @@ void showMouseCoords(int x, int y, SDL_Rect * rect, SDL_Window * win)
 
 int main(int argc, char *argv[])
 {
-	SDL_Surface *sur15, *sur24, *sur8, *sur4, *winSur, *winSur2;
+	SDL_Surface *sur15, *sur24, *sur8, *sur4, *winSur, *winSur2, *saveSur;
 	SDL_Window *window, *window2;
 	SDL_Event event;
 	int running = 1, offset = 0;
 	int x, y;
-	char fileName[MAX_STR_LEN], hdrStr[5];
+	char fileName[MAX_STR_LEN],saveFileName[MAX_STR_LEN], hdrStr[5];
 	FILE *fIn;
 	SDL_Rect rect = { RECT_X_INIT, RECT_Y_INIT, RECT_W_INIT, RECT_H_INIT };
 	line clutLine = { {RECT_X_INIT, RECT_Y_INIT}, 0 };
@@ -357,6 +357,7 @@ int main(int argc, char *argv[])
 		SDL_DestroyWindow(window);
 		return -1;
 	}
+	snprintf(saveFileName, sizeof(saveFileName), "%s.bmp", fileName);
 	//mode view window:     
 	SDL_GetWindowPosition(window, &x, &y);
 	window2 = SDL_CreateWindow("Mode viewer", SDL_WINDOWPOS_UNDEFINED, y + VRAM_HEIGHT, VRAM_WIDTH, VRAM_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
@@ -589,6 +590,24 @@ readFile:
 					drawRect(sur15, winSur, &rect, &clutLine);
 					drawInbound(sur4, window2, winSur2, pInBuffer, &rect);
 					break;
+
+				case SDLK_p:
+					switch (mode) {
+					case SDL_PIXELFORMAT_ABGR1555:
+						saveSur = sur15;
+						break;
+					case SDL_PIXELFORMAT_INDEX8:
+						saveSur = sur8;
+						break;
+					case SDL_PIXELFORMAT_INDEX4MSB:
+						saveSur = sur4;
+						break;
+					default:
+						saveSur = sur24;
+					}
+					SDL_SaveBMP(saveSur, saveFileName);
+					break;
+
 				case SDLK_RETURN:
 					SDL_FreeSurface(sur15);
 					SDL_FreeSurface(sur24);	//these are created from reread buffers
@@ -623,6 +642,7 @@ readFile:
 	SDL_FreeSurface(sur8);
 	SDL_FreeSurface(sur15);
 	SDL_FreeSurface(sur24);
+	SDL_FreeSurface(saveSur);
 
 	return 0;
 }
