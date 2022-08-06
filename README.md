@@ -3,6 +3,10 @@ PsxVram-SDL
 
 Viewer for displaying PSX VRAM dumps and save states from PCSX, ePSXe and NO$PSX.
 
+**Discontinued**
+===========
+This repository is discontinued all new features will be implemented in [PsxVram-DotNet](https://github.com/romhack/PsxVram-DotNet).
+
 Features
 --------
 
